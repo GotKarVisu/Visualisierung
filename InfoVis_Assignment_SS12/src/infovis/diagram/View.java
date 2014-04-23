@@ -53,6 +53,7 @@ public class View extends JPanel{
 			if(maxHeight < element.getY())
 				maxHeight = element.getY();
 		}
+		
 		maxWidth += Vertex.STD_WIDTH;
 		maxHeight += Vertex.STD_HEIGHT;
 		
