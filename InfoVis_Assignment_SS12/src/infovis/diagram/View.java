@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 
@@ -39,9 +40,14 @@ public class View extends JPanel{
 	
 	public void paint(Graphics g) {
 		
+		// Scalefactor von Slider lesen
+		AffineTransform trans = new AffineTransform();
+		trans.scale(scale, scale);
+		
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
+		g2D.setTransform(trans);
 		
 		//draw whole image
 		paintDiagram(g2D);
@@ -59,11 +65,14 @@ public class View extends JPanel{
 		
 		//System.out.println("Height:" + maxHeight + "\nWidth:" + maxWidth);
 		//draw overview
+	
+		
 		g2D.scale(.3, .3);
 		g2D.setColor(Color.white);
 		g2D.fillRect(0, 0, (int)maxWidth, (int)maxHeight);
 		g2D.setColor(Color.red);
 		g2D.drawRect(0, 0, (int)maxWidth, (int)maxHeight);
+		// g2D.draw(overviewRect);
 		paintDiagram(g2D);
 		
 	}
