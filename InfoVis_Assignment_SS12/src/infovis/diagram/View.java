@@ -72,6 +72,9 @@ public class View extends JPanel{
 		g2D.setColor(Color.red);
 		g2D.drawRect(0, 0, (int)maxWidth, (int)maxHeight);
 		paintDiagram(g2D);
+		marker.setRect(0,0,maxWidth/scale,maxHeight/scale);
+		//marker.
+		g2D.draw(marker);
 		
 	}
 	private void paintDiagram(Graphics2D g2D){
