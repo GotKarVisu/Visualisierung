@@ -60,21 +60,17 @@ public class View extends JPanel{
 				maxWidth = element.getX();
 			if(maxHeight < element.getY())
 				maxHeight = element.getY();
-		}
-		
+		}		
 		maxWidth += Vertex.STD_WIDTH;
 		maxHeight += Vertex.STD_HEIGHT;
-		
-		//System.out.println("Height:" + maxHeight + "\nWidth:" + maxWidth);
+
 		//draw overview
 		g2D.setTransform(old);
-		//trans.scale(1.0, 1.0);
 		g2D.scale(.3, .3);
 		g2D.setColor(Color.white);
 		g2D.fillRect(0, 0, (int)maxWidth, (int)maxHeight);
 		g2D.setColor(Color.red);
 		g2D.drawRect(0, 0, (int)maxWidth, (int)maxHeight);
-		// g2D.draw(overviewRect);
 		paintDiagram(g2D);
 		
 	}
