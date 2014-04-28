@@ -170,12 +170,22 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		double scale = view.getScale();
 		/*
 		 * Aufgabe 1.2
+		 * Auch MIT INTERSECTS MÖGLICH?
 		 */
+		boolean inBox = 
+			x >= view.getBounds().getMinX() * .3 && 
+			x <= view.getBounds().getMaxX() * .3 &&
+			y >= view.getBounds().getMinY() * .3 && 
+			y <= view.getBounds().getMaxY() * .3 && scale != 1;
+		
+		
 		if (fisheyeMode){
 			/*
 			 * handle fisheye mode interactions
 			 */
 			view.repaint();
+		}else if(inBox) {
+			view.updateTranslation(x/.3, y/.3);
 		} else if (edgeDrawMode){
 			drawingEdge.setX(e.getX());
 			drawingEdge.setY(e.getY());

@@ -45,10 +45,10 @@ public class View extends JPanel{
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
 		g2D.scale(scale, scale);
-		
+		g2D.translate(-translateX, -translateY);
 		//draw whole image
 		paintDiagram(g2D);
-		
+		g2D.translate(translateX, translateY);
 		double maxWidth = 0.0, maxHeight = 0.0;
 		for (Element element: model.getElements()){
 			if(maxWidth < element.getX())
@@ -72,6 +72,7 @@ public class View extends JPanel{
 		
 		// draw marker
 		marker.setRect(0,0,maxWidth/scale,maxHeight/scale);
+		g2D.translate(translateX, translateY); //move marker
 		g2D.draw(marker);
 		
 	}
