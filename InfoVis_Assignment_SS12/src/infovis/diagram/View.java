@@ -40,16 +40,11 @@ public class View extends JPanel{
 	
 	public void paint(Graphics g) {
 		
-		// Scalefactor von Slider lesen
-		AffineTransform trans = new AffineTransform();
-		AffineTransform old = new AffineTransform();
-		old.scale(1,1);
-		trans.scale(scale, scale);
-		
+		// Scalefactor von Slider lesen		
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
-		g2D.setTransform(trans);
+		g2D.scale(scale, scale);
 		
 		//draw whole image
 		paintDiagram(g2D);
@@ -63,17 +58,20 @@ public class View extends JPanel{
 		}		
 		maxWidth += Vertex.STD_WIDTH;
 		maxHeight += Vertex.STD_HEIGHT;
-
+		
 		//draw overview
-		g2D.setTransform(old);
+		g2D.scale(1/scale, 1/scale);
 		g2D.scale(.3, .3);
 		g2D.setColor(Color.white);
 		g2D.fillRect(0, 0, (int)maxWidth, (int)maxHeight);
 		g2D.setColor(Color.red);
-		g2D.drawRect(0, 0, (int)maxWidth, (int)maxHeight);
 		paintDiagram(g2D);
+
+		overviewRect.setRect(0, 0, maxWidth, maxHeight);
+		g2D.draw(overviewRect);
+		
+		// draw marker
 		marker.setRect(0,0,maxWidth/scale,maxHeight/scale);
-		//marker.
 		g2D.draw(marker);
 		
 	}
