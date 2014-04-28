@@ -42,6 +42,8 @@ public class View extends JPanel{
 		
 		// Scalefactor von Slider lesen
 		AffineTransform trans = new AffineTransform();
+		AffineTransform old = new AffineTransform();
+		old.scale(1,1);
 		trans.scale(scale, scale);
 		
 		Graphics2D g2D = (Graphics2D) g;
@@ -65,8 +67,8 @@ public class View extends JPanel{
 		
 		//System.out.println("Height:" + maxHeight + "\nWidth:" + maxWidth);
 		//draw overview
-	
-		
+		g2D.setTransform(old);
+		//trans.scale(1.0, 1.0);
 		g2D.scale(.3, .3);
 		g2D.setColor(Color.white);
 		g2D.fillRect(0, 0, (int)maxWidth, (int)maxHeight);
