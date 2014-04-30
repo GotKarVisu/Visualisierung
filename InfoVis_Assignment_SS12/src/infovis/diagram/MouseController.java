@@ -53,8 +53,6 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		int y = e.getY();
 		double scale = view.getScale();
 		
-		
-		
 		if (e.getButton() == MouseEvent.BUTTON3){
 			/*
 			 * add grouped elements to the model
@@ -107,8 +105,8 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			/*
 			 * calculate offset
 			 */
-			mouseOffsetX = x - selectedElement.getX() * scale ;
-			mouseOffsetY = y - selectedElement.getY() * scale ;	
+			mouseOffsetX = x - selectedElement.getX() * scale;
+			mouseOffsetY = y - selectedElement.getY() * scale;	
 		}
 		
 	}
