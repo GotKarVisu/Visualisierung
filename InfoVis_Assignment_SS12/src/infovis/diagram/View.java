@@ -46,19 +46,39 @@ public class View extends JPanel{
 		g2D.clearRect(0, 0, getWidth(), getHeight());
 		g2D.scale(scale, scale);
 		if(translateX-marker.getWidth()/2 > 0) {
-			g2D.translate(-translateX+marker.getWidth()/2, 0);
+			if(translateX+marker.getWidth()/2 > overviewRect.getMaxX()) {
+				g2D.translate(-(overviewRect.getMaxX()-marker.getWidth()), 0);
+			}
+			else {
+				g2D.translate(-translateX+marker.getWidth()/2, 0);
+			}
 		}
 		if(translateY-marker.getHeight()/2 > 0) {
-			g2D.translate(0, -translateY+marker.getHeight()/2);
+			if(translateY+marker.getHeight()/2 > overviewRect.getMaxY()) {
+				g2D.translate(0, -(overviewRect.getMaxY()-marker.getHeight()));
+			}
+			else {
+				g2D.translate(0, -translateY+marker.getHeight()/2);
+			}
 		}
 		
 		//draw whole image
 		paintDiagram(g2D);
 		if(translateX-marker.getWidth()/2 > 0) {
-			g2D.translate(translateX-marker.getWidth()/2, 0);
+			if(translateX+marker.getWidth()/2 > overviewRect.getMaxX()) {
+				g2D.translate((overviewRect.getMaxX()-marker.getWidth()), 0);
+			}
+			else {
+				g2D.translate(translateX-marker.getWidth()/2, 0);
+			}
 		}
 		if(translateY-marker.getHeight()/2 > 0) {
-			g2D.translate(0, translateY-marker.getHeight()/2);
+			if(translateY+marker.getHeight()/2 > overviewRect.getMaxY()) {
+				g2D.translate(0, (overviewRect.getMaxY()-marker.getHeight()));
+			}
+			else {
+				g2D.translate(0, translateY-marker.getHeight()/2);
+			}
 		}
 		double maxWidth = 0.0, maxHeight = 0.0;
 		for (Element element: model.getElements()){
@@ -83,11 +103,21 @@ public class View extends JPanel{
 		
 		// draw marker
 		marker.setRect(0,0,maxWidth/scale,maxHeight/scale);
-		if(translateX-marker.getWidth()/2 > 0) {
-			g2D.translate(translateX-marker.getWidth()/2, 0); //move marker
+		if(translateX-marker.getWidth()/2 > 0 ) {
+			if(translateX+marker.getWidth()/2 > overviewRect.getMaxX()) {
+				g2D.translate(overviewRect.getMaxX()-marker.getWidth(), 0); //move marker
+			}
+			else {
+				g2D.translate(translateX-marker.getWidth()/2, 0); //move marker
+			}
 		}
 		if(translateY-marker.getHeight()/2 > 0) {
-			g2D.translate(0, translateY-marker.getHeight()/2); //move marker
+			if(translateY+marker.getHeight()/2 > overviewRect.getMaxY()) {
+				g2D.translate(0, overviewRect.getMaxY()-marker.getHeight()); //move marker
+			}
+			else {
+				g2D.translate(0, translateY-marker.getHeight()/2); //move marker
+			}
 		}
 		g2D.draw(marker);
 		
