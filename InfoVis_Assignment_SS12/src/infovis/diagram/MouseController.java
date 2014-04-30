@@ -185,8 +185,8 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		}else if(inBox) {
 			view.updateTranslation(x/.3, y/.3);
 		} else if (edgeDrawMode){
-			drawingEdge.setX(e.getX());
-			drawingEdge.setY(e.getY());
+			drawingEdge.setX(e.getX()/scale+view.getTranslateX());
+			drawingEdge.setY(e.getY()/scale+view.getTranslateY());
 		}else if(selectedElement != null){
 			selectedElement.updatePosition((e.getX()-mouseOffsetX)/scale, (e.getY()-mouseOffsetY) /scale);
 		}
