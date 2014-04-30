@@ -45,10 +45,21 @@ public class View extends JPanel{
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
 		g2D.scale(scale, scale);
-		g2D.translate(-translateX+marker.getWidth()/2, -translateY+marker.getHeight()/2);
+		if(translateX-marker.getWidth()/2 > 0) {
+			g2D.translate(-translateX+marker.getWidth()/2, 0);
+		}
+		if(translateY-marker.getHeight()/2 > 0) {
+			g2D.translate(0, -translateY+marker.getHeight()/2);
+		}
+		
 		//draw whole image
 		paintDiagram(g2D);
-		g2D.translate(translateX-marker.getWidth()/2, translateY-marker.getHeight()/2);
+		if(translateX-marker.getWidth()/2 > 0) {
+			g2D.translate(translateX-marker.getWidth()/2, 0);
+		}
+		if(translateY-marker.getHeight()/2 > 0) {
+			g2D.translate(0, translateY-marker.getHeight()/2);
+		}
 		double maxWidth = 0.0, maxHeight = 0.0;
 		for (Element element: model.getElements()){
 			if(maxWidth < element.getX())
@@ -72,7 +83,12 @@ public class View extends JPanel{
 		
 		// draw marker
 		marker.setRect(0,0,maxWidth/scale,maxHeight/scale);
-		g2D.translate(translateX-marker.getWidth()/2, translateY-marker.getHeight()/2); //move marker
+		if(translateX-marker.getWidth()/2 > 0) {
+			g2D.translate(translateX-marker.getWidth()/2, 0); //move marker
+		}
+		if(translateY-marker.getHeight()/2 > 0) {
+			g2D.translate(0, translateY-marker.getHeight()/2); //move marker
+		}
 		g2D.draw(marker);
 		
 	}
