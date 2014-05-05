@@ -13,7 +13,7 @@ public class View extends JPanel {
 	     private Model model = null;
 	     private Rectangle2D markerRectangle = new Rectangle2D.Double(0,0,0,0); 
 	     private double scale = 1;
-
+	     private double padding = 50;
 		 public Rectangle2D getMarkerRectangle() {
 			return markerRectangle;
 		}
@@ -43,14 +43,13 @@ public class View extends JPanel {
 			g2D.scale(scale, scale);
 			
 			//draw the rectangles of the scatterplot
-			print_scatterplotMatrix(g2D);
+			printScatterplotMatrix(g2D);
 		}
 		public void setModel(Model model) {
 			this.model = model;
 		}
-		public void print_scatterplotMatrix(Graphics2D g) {
+		public void printScatterplotMatrix(Graphics2D g) {
 			int anzahl_rect = model.getRanges().size();
-			double padding = 50;
 			double hor = padding, ver = padding;
 			int width_rect = 0;
 			if(getWidth()<getHeight()) {
@@ -61,7 +60,8 @@ public class View extends JPanel {
 			}
 			for(int i=0; i<anzahl_rect; ++i) {
 				for(int j=0; j<anzahl_rect; ++j) {
-					Rectangle2D rect = new Rectangle2D.Double(hor,ver,width_rect,width_rect);
+					Rectangle2D rect = 
+							new Rectangle2D.Double(hor,ver,width_rect,width_rect);
 					g.draw(rect);
 					hor += width_rect;
 				}
