@@ -43,6 +43,12 @@ public class View extends JPanel {
 			g2D.scale(scale, scale);
 			
 			//draw the rectangles of the scatterplot
+			print_scatterplotMatrix(g2D);
+		}
+		public void setModel(Model model) {
+			this.model = model;
+		}
+		public void print_scatterplotMatrix(Graphics2D g) {
 			int anzahl_rect = model.getRanges().size();
 			double padding = 50;
 			double hor = padding, ver = padding;
@@ -56,14 +62,11 @@ public class View extends JPanel {
 			for(int i=0; i<anzahl_rect; ++i) {
 				for(int j=0; j<anzahl_rect; ++j) {
 					Rectangle2D rect = new Rectangle2D.Double(hor,ver,width_rect,width_rect);
-					g2D.draw(rect);
+					g.draw(rect);
 					hor += width_rect;
 				}
 				hor=padding;
 				ver += width_rect;
 			}
-		}
-		public void setModel(Model model) {
-			this.model = model;
 		}
 }
