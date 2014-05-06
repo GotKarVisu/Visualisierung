@@ -60,12 +60,23 @@ public class View extends JPanel {
 		else {
 			width_rect = (int)Math.floor((getHeight()-padding)/anzahl_rect);
 		}
+		
 		int i=0;
 		for (String l : model.getLabels()) {
 			g.drawString(l, (int) padding+width_rect*i+3, (int) (padding-5)-12*(i%2));
 			i++;
 		}
-		
+		i = model.getRanges().size()-1;
+
+		g.rotate(-(90*java.lang.Math.PI)/180);
+		g.translate(-getHeight(), 0);
+		for (String l : model.getLabels()) {
+			g.drawString(l, (int) width_rect*i+3, (int) (padding-5)-12*(i%2));
+			i--;
+		}
+		g.translate(getHeight(), 0);
+		g.rotate((90*java.lang.Math.PI)/180);
+
 		/*g.drawString("Markteinf.", (int) padding, (int) (padding-5));
 		g.drawString("Hubraum", (int) (padding+width_rect), (int) (padding-5));
 		g.drawString("PS", (int) (padding+width_rect*2), (int) (padding-5));
