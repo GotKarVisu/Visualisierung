@@ -15,7 +15,7 @@ public class View extends JPanel {
      private Model model = null;
      private Rectangle2D markerRectangle = new Rectangle2D.Double(0,0,0,0); 
      private double scale = 1;
-     private double padding = 50;
+     private double padding = 32;
 	 public Rectangle2D getMarkerRectangle() {
 		return markerRectangle;
 	}
@@ -129,7 +129,7 @@ public class View extends JPanel {
 					double prozJ = (100.0/absJ)*(valJ-minJ);
 					double posJ = width_rect/100.0*prozJ;
 					
-					g.drawRect((int)(padding+width_rect*i+posI), (int)(padding+width_rect*j+posJ), 5, 5);
+					g.drawRect((int)(padding+width_rect*i+posI), (int)(padding+width_rect*j+posJ), 2, 2);
 				}
 			}
 		}
