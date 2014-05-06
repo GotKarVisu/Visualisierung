@@ -6,14 +6,13 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Iterator;
 
 public class MouseController implements MouseListener, MouseMotionListener {
 
 	private Model model = null;
 	private View view = null;
-	private double x = 0.0, y = 0.0;
-	private double w = 0.0, h = 0.0;
+	private int x = 0, y = 0;
+	private int w = 0, h = 0;
 
 	public void mouseClicked(MouseEvent arg0) {
 	}
@@ -27,18 +26,6 @@ public class MouseController implements MouseListener, MouseMotionListener {
 	public void mousePressed(MouseEvent arg0) {
 		x = arg0.getX();
 		y = arg0.getY();
-		if(w<x && h<y) {
-			view.getMarkerRectangle().setRect(w,h,x-w,y-h);
-		}
-		else if (w<x){
-			view.getMarkerRectangle().setRect(w,y,x-w,h-y);
-		}
-		else if (h<y){
-			view.getMarkerRectangle().setRect(x,h,w-x,y-h);
-		}
-		else {
-			view.getMarkerRectangle().setRect(x,y,w-x,h-y);
-		}
 	}
 
 	public void mouseReleased(MouseEvent arg0) {
@@ -53,8 +40,6 @@ public class MouseController implements MouseListener, MouseMotionListener {
 		
 		int rectX = (int) ((x-view.getPadding())/width_rect);
 		int rectY = (int) ((y-view.getPadding())/width_rect);
-//		Debug.println(String.valueOf(posX));
-//		Debug.println(String.valueOf(posY));
 		
 		for (Data d : model.getList()) {
 			double minX = model.getRanges().get(rectX).getMin()-1.0;
@@ -72,36 +57,24 @@ public class MouseController implements MouseListener, MouseMotionListener {
 			double posY = width_rect/100.0*prozY;
 			
 			boolean inBox = 
-					x   <= view.getPadding()+width_rect*rectX+posX   &&
-					x+w >= view.getPadding()+width_rect*rectX+posX+2.0 &&
-					y   <= view.getPadding()+width_rect*rectY+posY   &&
-					y+h >= view.getPadding()+width_rect*rectY+posY+2.0;
+				x     <= view.getPadding()+width_rect*rectX+posX   &&
+				(x+w) >= view.getPadding()+width_rect*rectX+posX+2 &&
+				y     <= view.getPadding()+width_rect*rectY+posY   &&
+				(y+h) >= view.getPadding()+width_rect*rectY+posY+2;
 			if(inBox) {
 				d.setColor(Color.red);
-			}
-			else {
+			} else {
 				d.setColor(Color.black);
 			}
 			view.repaint();
 		}
-		
 	}
 
 	public void mouseDragged(MouseEvent arg0) {
-		w = arg0.getX();
-		h = arg0.getY();
-		if(w<x && h<y) {
-			view.getMarkerRectangle().setRect(w,h,x-w,y-h);
-		}
-		else if (w<x){
-			view.getMarkerRectangle().setRect(w,y,x-w,h-y);
-		}
-		else if (h<y){
-			view.getMarkerRectangle().setRect(x,h,w-x,y-h);
-		}
-		else {
-			view.getMarkerRectangle().setRect(x,y,w-x,h-y);
-		}
+		w = arg0.getX()-x;
+		h = arg0.getY()-y;
+
+		view.getMarkerRectangle().setRect(x,y,w,h);
 		view.repaint();
 	}
 

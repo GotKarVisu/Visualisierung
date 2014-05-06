@@ -2,6 +2,7 @@ package infovis.scatterplot;
 
 import infovis.debug.Debug;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
