@@ -19,7 +19,7 @@ public class View extends JPanel{
 	private Model model = null;
 	private Color color = Color.BLUE;
 	private double scale = 1;
-	private double translateX= 0;
+	private double translateX=0;
 	private double translateY=0;
 	private Rectangle2D marker = new Rectangle2D.Double();
 	private Rectangle2D overviewRect = new Rectangle2D.Double();   
@@ -45,6 +45,7 @@ public class View extends JPanel{
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
 		g2D.scale(scale, scale);
+	
 		if(translateX-marker.getWidth()/2 > 0) {
 			if(translateX+marker.getWidth()/2 > overviewRect.getMaxX()) {
 				g2D.translate(-(overviewRect.getMaxX()-marker.getWidth()), 0);

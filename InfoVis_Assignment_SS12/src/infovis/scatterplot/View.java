@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -47,6 +48,7 @@ public class View extends JPanel {
 		
 		//draw the rectangles of the scatterplot
 		printScatterplotMatrix(g2D);
+		printData(g2D);
 	}
 	public void setModel(Model model) {
 		this.model = model;
@@ -115,4 +117,16 @@ public class View extends JPanel {
 			ver += width_rect;
 		}
 	}
+	
+	public void printData(Graphics2D g) {
+		for (Data d : model.getList()) {
+			//String tmp = String.valueOf(d.getValue(0));
+			ArrayList<double>
+			Debug.print(tmp);
+		}
+		
+		//g.drawRect(x, y, width, height);
+		
+	}
+	
 }
