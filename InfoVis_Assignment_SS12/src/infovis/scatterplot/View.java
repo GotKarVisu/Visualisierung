@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 
@@ -79,22 +80,6 @@ public class View extends JPanel {
 		g.translate(getHeight(), 0);
 		g.rotate((90*java.lang.Math.PI)/180);
 
-		/*g.drawString("Markteinf.", (int) padding, (int) (padding-5));
-		g.drawString("Hubraum", (int) (padding+width_rect), (int) (padding-5));
-		g.drawString("PS", (int) (padding+width_rect*2), (int) (padding-5));
-		g.drawString("l/100km", (int) (padding+width_rect*3), (int) (padding-5));
-		g.drawString("Vmax(km/h)", (int) (padding+width_rect*4), (int) (padding-5));
-		g.drawString("Gewicht(t)", (int) (padding+width_rect*5), (int) (padding-5));
-		g.drawString("Beschleunigung(0-100/s)", (int) (padding+width_rect*6), (int) (padding-5));
-		
-		g.drawString("Name", 10, 10);
-		g.drawString("Markteinfuehrung", 10, 10);
-		g.drawString("Hubraum", 10, 10);
-		g.drawString("PS", 10, 10);
-		g.drawString("l/100km", 10, 10);
-		g.drawString("Vmax(km/h)", 10, 10);
-		g.drawString("Gewicht(t)", 10, 10);
-		g.drawString("Beschleunigung(0-100/s)", 10, 10);*/
 	}
 	public void printScatterplotMatrix(Graphics2D g) {
 		int anzahl_rect = model.getRanges().size();
@@ -119,14 +104,20 @@ public class View extends JPanel {
 	}
 	
 	public void printData(Graphics2D g) {
-		for (Data d : model.getList()) {
-			//String tmp = String.valueOf(d.getValue(0));
-			ArrayList<double>
-			Debug.print(tmp);
+		int anzahl_rect = model.getRanges().size();
+		int width_rect = 0;
+		if(getWidth()<getHeight()) {
+			width_rect = (int)Math.floor((getWidth()-padding)/anzahl_rect);
 		}
-		
-		//g.drawRect(x, y, width, height);
-		
+		else {
+			width_rect = (int)Math.floor((getHeight()-padding)/anzahl_rect);
+		}
+		for (Data d : model.getList()) {
+			double val = d.getValue(0);
+			double proz = (100.0/40.0)*(val-1970.0);
+			Debug.println(String.valueOf(proz));
+			double pos = width_rect/100.0*proz;
+			g.drawRect((int)(padding+pos), (int)(padding+pos), 5, 5);
+		}
 	}
-	
 }
