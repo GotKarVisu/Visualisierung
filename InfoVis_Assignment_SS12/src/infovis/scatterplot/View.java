@@ -112,12 +112,26 @@ public class View extends JPanel {
 		else {
 			width_rect = (int)Math.floor((getHeight()-padding)/anzahl_rect);
 		}
-		for (Data d : model.getList()) {
-			double val = d.getValue(0);
-			double proz = (100.0/40.0)*(val-1970.0);
-			Debug.println(String.valueOf(proz));
-			double pos = width_rect/100.0*proz;
-			g.drawRect((int)(padding+pos), (int)(padding+pos), 5, 5);
+		for(int i=0; i<anzahl_rect; ++i) {
+			for(int j=0; j<anzahl_rect; ++j) {
+				for (Data d : model.getList()) {
+					double minI = model.getRanges().get(i).getMin()-1.0;
+					double maxI = model.getRanges().get(i).getMax()+1.0;
+					double absI = maxI-minI;
+					double valI = d.getValue(i);
+					double prozI = (100.0/absI)*(valI-minI);
+					double posI = width_rect/100.0*prozI;
+					
+					double minJ = model.getRanges().get(j).getMin()-1.0;
+					double maxJ = model.getRanges().get(j).getMax()+1.0;
+					double absJ = maxJ-minJ;
+					double valJ = d.getValue(j);
+					double prozJ = (100.0/absJ)*(valJ-minJ);
+					double posJ = width_rect/100.0*prozJ;
+					
+					g.drawRect((int)(padding+width_rect*i+posI), (int)(padding+width_rect*j+posJ), 5, 5);
+				}
+			}
 		}
 	}
 }
