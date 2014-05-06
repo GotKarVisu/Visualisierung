@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import javax.swing.JPanel;
 
@@ -19,24 +17,27 @@ public class View extends JPanel {
 	 public Rectangle2D getMarkerRectangle() {
 		return markerRectangle;
 	}
+	public double getPadding() {
+		return padding;
+	}
 	
 	@Override
 	public void paint(Graphics g) {
 
-        for (String l : model.getLabels()) {
-			Debug.print(l);
-			Debug.print(",  ");
-			Debug.println("");
-		}
-		for (Range range : model.getRanges()) {
-			Debug.print(range.toString());
-			Debug.print(",  ");
-			Debug.println("");
-		}
-		for (Data d : model.getList()) {
-			Debug.print(d.toString());
-			Debug.println("");
-		}
+//        for (String l : model.getLabels()) {
+//			Debug.print(l);
+//			Debug.print(",  ");
+//			Debug.println("");
+//		}
+//		for (Range range : model.getRanges()) {
+//			Debug.print(range.toString());
+//			Debug.print(",  ");
+//			Debug.println("");
+//		}
+//		for (Data d : model.getList()) {
+//			Debug.print(d.toString());
+//			Debug.println("");
+//		}
 		
 		//create a Graphics Object
 		Graphics2D g2D = (Graphics2D) g;
@@ -44,6 +45,7 @@ public class View extends JPanel {
 		g2D.clearRect(0, 0, getWidth(), getHeight());
 		g2D.scale(scale, scale);
 		
+		g2D.draw(markerRectangle);
 
 		printLables(g2D);
 		
@@ -129,6 +131,7 @@ public class View extends JPanel {
 					double prozJ = (100.0/absJ)*(valJ-minJ);
 					double posJ = width_rect/100.0*prozJ;
 					
+					g.setColor(d.getColor());
 					g.drawRect((int)(padding+width_rect*i+posI), (int)(padding+width_rect*j+posJ), 2, 2);
 				}
 			}
