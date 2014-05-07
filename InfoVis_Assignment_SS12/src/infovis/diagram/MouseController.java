@@ -52,7 +52,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		int x = e.getX();
 		int y = e.getY();
 		double scale = view.getScale();
-		
+
 		if (e.getButton() == MouseEvent.BUTTON3){
 			/*
 			 * add grouped elements to the model
@@ -76,7 +76,6 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			}
 			model.removeEdges(edgesToRemove);
 			model.removeElement(groupVertex);
-			
 		}
 	}
 
@@ -105,8 +104,8 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			/*
 			 * calculate offset
 			 */
-			mouseOffsetX = x - selectedElement.getX() * scale;
-			mouseOffsetY = y - selectedElement.getY() * scale;	
+			mouseOffsetX = x - selectedElement.getX() * scale ;
+			mouseOffsetY = y - selectedElement.getY() * scale ;	
 		}
 		
 	}
@@ -166,15 +165,9 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		int x = e.getX();
 		int y = e.getY();
 		double scale = view.getScale();
-		/*
-		 * Aufgabe 1.2
-		 * Auch MIT INTERSECTS MÖGLICH?
-		 */
-		boolean inBox = 
-			x >= view.getBounds().getMinX() * .3 && 
-			x <= view.getBounds().getMaxX() * .3 &&
-			y >= view.getBounds().getMinY() * .3 && 
-			y <= view.getBounds().getMaxY() * .3 && scale != 1;
+		
+		// TODO Aufgabe 1.2
+		
 		
 		
 		if (fisheyeMode){
@@ -182,11 +175,9 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			 * handle fisheye mode interactions
 			 */
 			view.repaint();
-		}else if(inBox) {
-			view.updateTranslation(x/.3, y/.3);
 		} else if (edgeDrawMode){
-			drawingEdge.setX(e.getX()/scale+view.getTranslateX());
-			drawingEdge.setY(e.getY()/scale+view.getTranslateY());
+			drawingEdge.setX(e.getX());
+			drawingEdge.setY(e.getY());
 		}else if(selectedElement != null){
 			selectedElement.updatePosition((e.getX()-mouseOffsetX)/scale, (e.getY()-mouseOffsetY) /scale);
 		}
