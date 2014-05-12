@@ -1,5 +1,6 @@
 package infovis.paracoords;
 
+import infovis.debug.Debug;
 import infovis.scatterplot.Model;
 
 import java.awt.Graphics;
@@ -21,9 +22,15 @@ public class View extends JPanel {
 		drawCoordinateSystem(g2D);
 	}
 	public void drawCoordinateSystem(Graphics2D g2D) {
-		g2D.drawLine(padding, padding, padding, getHeight()-padding);
-		g2D.drawLine(getWidth()-padding, padding, getWidth()-padding, getHeight()-padding);
-		g2D.drawLine(padding, getHeight()-padding, getWidth()-padding, getHeight()-padding);
+//		g2D.drawLine(padding, padding, padding, getHeight()-padding);
+//		g2D.drawLine(getWidth()-padding, padding, getWidth()-padding, getHeight()-padding);
+//		Debug.println(String.valueOf(model.getDim()));
+		for(int i=0; i<model.getDim(); ++i) {
+			int verschiebung = padding + i * (getWidth())/model.getDim();
+			g2D.drawLine(verschiebung, padding, verschiebung, getHeight()-padding);
+		}
+		
+		g2D.drawLine(padding, getHeight()-padding, model.getDim()*(getWidth()/model.getDim()), getHeight()-padding);
 	}
 
 	@Override
