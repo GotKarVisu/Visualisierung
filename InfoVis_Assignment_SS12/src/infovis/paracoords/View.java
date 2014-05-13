@@ -31,7 +31,7 @@ public class View extends JPanel {
 			int verschiebung = padding + i * coordWidth;
 			g2D.drawLine(verschiebung, padding, verschiebung, getHeight()-padding);
 		}
-		g2D.drawLine(padding, getHeight()-padding, padding+(model.getDim()-1)*coordWidth, getHeight()-padding);
+		//g2D.drawLine(padding, getHeight()-padding, padding+(model.getDim()-1)*coordWidth, getHeight()-padding);
 	}
 	public void drawLables(Graphics2D g2D) {
 		int coordWidth = (getWidth()-padding)/model.getDim();
@@ -48,8 +48,8 @@ public class View extends JPanel {
 			Data d = model.getList().get(i);
 			//Schleife über alle Values eines Objekts
 			for(int j=0; j<model.getDim()-1; ++j) {
-				double max = padding;
-				double min = getHeight()-padding;
+				double max = padding+10;
+				double min = getHeight()-padding-10;
 				
 				double valLeft = d.getValue(j);
 				double maxLeft = model.getRanges().get(j).getMax();
@@ -66,7 +66,6 @@ public class View extends JPanel {
 				g2D.drawLine(padding+j*coordWidth, coordYLeft, padding+(j+1)*coordWidth, coordYRight);
 			}
 		}
-//		Debug.println(String.valueOf(model.getList().size()));
 	}
 	@Override
 	public void update(Graphics g) {
