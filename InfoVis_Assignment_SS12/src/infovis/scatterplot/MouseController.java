@@ -1,7 +1,5 @@
 package infovis.scatterplot;
 
-import infovis.debug.Debug;
-
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

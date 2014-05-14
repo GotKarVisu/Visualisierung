@@ -1,19 +1,22 @@
 package infovis.paracoords;
 
-import infovis.debug.Debug;
 import infovis.scatterplot.Data;
 import infovis.scatterplot.Model;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
 public class View extends JPanel {
 	private Model model = null;
 	private int padding = 80;
+    private Rectangle2D markerRectangle = new Rectangle2D.Double(0.0,0.0,0.0,0.0); 
+	 public Rectangle2D getMarkerRectangle() {
+		return markerRectangle;
+	}
 	
 	@Override
 	public void paint(Graphics g) {
@@ -21,6 +24,7 @@ public class View extends JPanel {
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
+		g2D.draw(markerRectangle);
 		drawCoordinateSystem(g2D);
 		drawLables(g2D);
 		drawData(g2D);
