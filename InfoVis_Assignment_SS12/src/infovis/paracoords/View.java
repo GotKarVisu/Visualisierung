@@ -66,7 +66,7 @@ public class View extends JPanel {
 				double minRight = model.getRanges().get(j+1).getMin();
 				double prozRight = (100/(maxRight-minRight))*(valRight-minRight);
 				int coordYRight = (int) ((((max-min)/100)*prozRight)+min);
-				
+				g2D.setColor(d.getColor());
 				g2D.drawLine(padding+j*coordWidth, coordYLeft, padding+(j+1)*coordWidth, coordYRight);
 			}
 		}
@@ -82,6 +82,11 @@ public class View extends JPanel {
 
 	public void setModel(Model model) {
 		this.model = model;
+	}
+	
+	public int GetPadding() {
+		return padding;
+	
 	}
 	
 }
