@@ -40,7 +40,7 @@ public class MouseController implements MouseListener, MouseMotionListener {
 			Data d = model.getList().get(i);
 			boolean select = false;
 			//Schleife über alle Values eines Objekts			
-			for(int j=0; j<model.getDim()-1; ++j) {
+			for(int j=0; j<model.getDim(); ++j) {
 				double max = view.GetPadding()+10;
 				double min = view.getHeight()-view.GetPadding()-10;
 				
