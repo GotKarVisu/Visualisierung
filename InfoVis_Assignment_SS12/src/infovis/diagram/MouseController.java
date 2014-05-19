@@ -26,6 +26,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
 	 private boolean edgeDrawMode = false;
 	 private DrawingEdge drawingEdge = null;
 	 private boolean fisheyeMode;
+	 private double dx = -1.0, dy = -1.0;
 	 private GroupingRectangle groupRectangle;
 	/*
 	 * Getter And Setter
@@ -106,15 +107,23 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			 */
 			mouseOffsetX = x - selectedElement.getX() * scale ;
 			mouseOffsetY = y - selectedElement.getY() * scale ;	
+			if(view.markerContains(x, y)) {
+				dx = x - view.getMarker().getMinX();
+				dy = y - view.getMarker().getMinY();
+			}
+			else {
+				dx = -1.0;
+				dy = -1.0;
+			}
 		}
 		
 	}
 	public void mouseReleased(MouseEvent arg0){
 		int x = arg0.getX();
 		int y = arg0.getY();
-		
+		double scale = view.getScale();
 		if (drawingEdge != null){
-			Element to = getElementContainingPosition(x, y);
+			Element to = getElementContainingPosition(x/scale, y/scale);
 			model.addEdge(new Edge(drawingEdge.getFrom(),(Vertex)to));
 			model.removeElement(drawingEdge);
 			drawingEdge = null;
@@ -168,7 +177,9 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		
 		// TODO Aufgabe 1.2
 		
-		
+		if(dx >= 0.0 && dy >= 0.0) {
+			view.markerMin(x-dx, y-dy);
+		}
 		
 		if (fisheyeMode){
 			/*
@@ -176,8 +187,8 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			 */
 			view.repaint();
 		} else if (edgeDrawMode){
-			drawingEdge.setX(e.getX());
-			drawingEdge.setY(e.getY());
+			drawingEdge.setX(e.getX()/scale-view.getTranslateX());
+			drawingEdge.setY(e.getY()/scale-view.getTranslateY());
 		}else if(selectedElement != null){
 			selectedElement.updatePosition((e.getX()-mouseOffsetX)/scale, (e.getY()-mouseOffsetY) /scale);
 		}
@@ -215,7 +226,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		Iterator<Element> iter = getModel().iterator();
 		while (iter.hasNext()) {
 		  Element element =  iter.next();
-		  if (element.contains(x, y)) currentElement = element;  
+		  if (element.contains(x-view.getTranslateX(), y-view.getTranslateY())) currentElement = element;  
 		}
 		return currentElement;
 	}

@@ -20,7 +20,9 @@ public class View extends JPanel{
 	private double markerOriginX = 0.0;
 	private double markerOriginY = 0.0;
 	private Rectangle2D marker = new Rectangle2D.Double();
-	private Rectangle2D overviewRect = new Rectangle2D.Double();   
+	private Rectangle2D overviewRect = new Rectangle2D.Double();
+	private double xMin = 0.0, yMin = 0.0;
+	private double ratio = 0.3;
 
 	public Model getModel() {
 		return model;
@@ -41,27 +43,39 @@ public class View extends JPanel{
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.clearRect(0, 0, getWidth(), getHeight());
-		g2D.scale(scale, scale);
 		
-//		if(translateX-marker.getWidth()/2 > 0) {
-//			if(translateX+marker.getWidth()/2 > overviewRect.getMaxX()) {
-//				g2D.translate(-(overviewRect.getMaxX()-marker.getWidth()), 0);
-//			}
-//			else {
-//				g2D.translate(-translateX+marker.getWidth()/2, 0);
-//			}
-//		}
-//		if(translateY-marker.getHeight()/2 > 0) {
-//			if(translateY+marker.getHeight()/2 > overviewRect.getMaxY()) {
-//				g2D.translate(0, -(overviewRect.getMaxY()-marker.getHeight()));
-//			}
-//			else {
-//				g2D.translate(0, -translateY+marker.getHeight()/2);
-//			}
-//		}		
+		marker.setRect(xMin, yMin, getWidth()*ratio/scale, getHeight()*ratio/scale);
+		overviewRect.setRect(0,0,getBounds().width*ratio,getBounds().height*ratio);
 		
+		if(marker.getMaxX() > overviewRect.getMaxX()) {
+			Rectangle2D rect = marker.getBounds2D();
+			double max_rect = rect.getX() - (rect.getMaxX() - overviewRect.getMaxX());
+			marker.setRect(max_rect,rect.getMinY(),rect.getWidth(),rect.getHeight());
+		}
+		else if(marker.getMinX() < overviewRect.getMinX()) {
+			Rectangle2D rect = marker.getBounds2D();
+			double min_rect = rect.getX() - (rect.getMinX() - overviewRect.getMinX());
+			marker.setRect(min_rect,rect.getMinY(),rect.getWidth(),rect.getHeight());
+		}
+		if(marker.getMaxY() > overviewRect.getMaxY()) {
+			Rectangle2D rect = marker.getBounds2D();
+			double max_rect = rect.getY() - (rect.getMaxY() - overviewRect.getMaxY());
+			marker.setRect(rect.getMinX(),max_rect,rect.getWidth(),rect.getHeight());
+		}
+		else if(marker.getMinY() < overviewRect.getMinY()) {
+			Rectangle2D rect = marker.getBounds2D();
+			double max_rect = rect.getY() - (rect.getMinY() - overviewRect.getMinY());
+			marker.setRect(rect.getMinX(),max_rect,rect.getWidth(),rect.getHeight());
+		}
+		
+		g2D.draw(marker);
+		g2D.draw(overviewRect);
+		g2D.scale(ratio, ratio);
 		paintDiagram(g2D);
-		paintNavigation(g2D);		
+		g2D.scale(scale/ratio, scale/ratio);
+		updateTranslation((overviewRect.getMinX()-marker.getMinX())*1/ratio, (overviewRect.getMinY()-marker.getMinY())*1/ratio);
+		g2D.translate(translateX, translateY);
+		paintDiagram(g2D);
 	}
 	private void paintDiagram(Graphics2D g2D){
 		for (Element element: model.getElements()){
@@ -91,27 +105,8 @@ public class View extends JPanel{
 		g2D.draw(overviewRect);
 
 		// MARKER
-		
 		marker.setRect(markerOriginX, markerOriginY, maxWidth/scale, maxHeight/scale);
-//		if(translateX-marker.getWidth()/2 > 0 ) {
-//			if(translateX+marker.getWidth()/2 > overviewRect.getMaxX()) {
-//				g2D.translate(overviewRect.getMaxX()-marker.getWidth(), 0); //move marker
-//			}
-//			else {
-//				g2D.translate(translateX-marker.getWidth()/2, 0); //move marker
-//			}
-//		}
-//		if(translateY-marker.getHeight()/2 > 0) {
-//			if(translateY+marker.getHeight()/2 > overviewRect.getMaxY()) {
-//				g2D.translate(0, overviewRect.getMaxY()-marker.getHeight()); //move marker
-//			}
-//			else {
-//				g2D.translate(0, translateY-marker.getHeight()/2); //move marker
-//			}
-//		}
 		g2D.draw(marker);
-		
-		
 	}
 	
 	public void setScale(double scale) {
@@ -144,6 +139,11 @@ public class View extends JPanel{
 	}
 	public boolean markerContains(int x, int y){
 		return marker.contains(x, y);
+	}
+	public void markerMin(double x,double y)
+	{
+		xMin = x;
+		yMin = y;
 	}
 }
  
