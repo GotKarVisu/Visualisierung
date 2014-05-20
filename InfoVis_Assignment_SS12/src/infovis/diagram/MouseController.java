@@ -95,9 +95,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			drawingEdge = new DrawingEdge((Vertex)getElementContainingPosition(x/scale,y/scale));
 			model.addElement(drawingEdge);
 		} else if (fisheyeMode){
-			/*
-			 * do handle interactions in fisheye mode
-			*/
+			view.setModel((new Fisheye().transform(model, view)));
 			view.repaint();
 		} else {
 			

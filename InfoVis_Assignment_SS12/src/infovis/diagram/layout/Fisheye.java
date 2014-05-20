@@ -6,6 +6,7 @@ import infovis.diagram.View;
 import infovis.diagram.elements.Edge;
 import infovis.diagram.elements.Vertex;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Fisheye implements Layout{
@@ -28,7 +29,18 @@ public class Fisheye implements Layout{
 
 	public Model transform(Model model, View view) {
 		// TODO Aufgabe 4
-		return null;
+		
+		Model fisheyModel=new Model();
+		fisheyModel.addEdges(new ArrayList(model.getEdges()));
+		fisheyModel.addVertices(new ArrayList(model.getVertices()));
+		for(Vertex vertex: fisheyModel.getVertices()){
+			vertex.setWidth(200);
+			
+		}
+		
+		
+		
+		return fisheyModel;
 	}
 	
 //	public double func_G(double x) {
