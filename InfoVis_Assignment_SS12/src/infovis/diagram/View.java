@@ -15,6 +15,8 @@ public class View extends JPanel{
 	private Model model = null;
 	private Color color = Color.BLUE;
 	private double scale = 1;
+	 private int MousePosX = 0;
+	 private int MousePosY = 0;
 	private double translateX = 0.0;
 	private double translateY = 0.0;
 	private double markerOriginX = 0.0;
@@ -36,7 +38,14 @@ public class View extends JPanel{
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
+	public void setMousePos(int x, int y) {
+		this.MousePosX = x;
+		this.MousePosY = y;
+	}
 
+	public int getMouseX() { return this.MousePosX; }
+	public int getMouseY() { return this.MousePosY; }
 	
 	public void paint(Graphics g) {
 			

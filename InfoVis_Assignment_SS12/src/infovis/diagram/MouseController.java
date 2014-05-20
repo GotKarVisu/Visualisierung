@@ -46,10 +46,15 @@ public class MouseController implements MouseListener,MouseMotionListener {
 	public void setView(View diagramView) {
 		this.view = diagramView;
 	}
+	public void setMouse(MouseEvent e) {
+		this.view.setMousePos(e.getX(), e.getY());
+	}
+
 	/*
      * Implements MouseListener
      */
 	public void mouseClicked(MouseEvent e) {
+		setMouse(e);
 		int x = e.getX();
 		int y = e.getY();
 		double scale = view.getScale();
