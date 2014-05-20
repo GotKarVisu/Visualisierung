@@ -97,7 +97,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		} else if (fisheyeMode){
 			/*
 			 * do handle interactions in fisheye mode
-			 */
+			*/
 			view.repaint();
 		} else {
 			
@@ -174,8 +174,6 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		int x = e.getX();
 		int y = e.getY();
 		double scale = view.getScale();
-		
-		// TODO Aufgabe 1.2
 		
 		if(dx >= 0.0 && dy >= 0.0) {
 			view.markerMin(x-dx, y-dy);
