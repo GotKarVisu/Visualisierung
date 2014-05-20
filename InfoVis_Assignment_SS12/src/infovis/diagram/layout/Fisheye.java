@@ -10,21 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Fisheye implements Layout{
-	private double d = 5.0;
-	private double PnormX = 0.0, PnormY = 0.0;
-	private double DnormX = 0.0, DnormY = 0.0;
-	private double DmaxX = 0.0, DmaxY = 0.0;
-	private double PboundaryX = 0.0, PboundaryY = 0.0;
+	public double d = 2;
 	
-	private double GetD() { return d; }
-	private double GetPnormX() { return PnormX; }
-	private double GetPnormY() { return PnormY; }
-	private double GetDnormX() { return DnormX; }
-	private double GetDnormY() { return DnormY; }
-	private double GetDmaxX() { return DmaxX; }
-	private double GetDmaxY() { return DmaxY; }
-	private double GetPboundaryX() { return PboundaryX; }
-	private double GetPboundaryY() { return PboundaryY; }
 	
 	
 	public int min(int a, int b) {
@@ -39,33 +26,33 @@ public class Fisheye implements Layout{
 	}
 
 	public Model transform(Model model, View view) {
-		// TODO Aufgabe 4
-		int absX = min(view.getMouseX(), (view.getWidth()-view.getMouseX()));
-		int absY = min(view.getMouseY(), (view.getHeight()-view.getMouseY()));
-		int abs = min(absY, absX);
 		
-		double DmaxX = 0;
+		int PfocusX = view.getMouseX();
+		int PfocusY = view.getMouseY();
 		
-		if(PnormX > view.getMouseX()) {
-			DmaxX = PboundaryX - view.getMouseX();
-		} else {
-			DmaxX = 0 - view.getMouseX(); 
-		}
-		
-		double PfishX = view.getMouseX() + G((GetDnormX()/GetDmaxX())) * DmaxX;
-		double PfishY = view.getMouseY() + G((GetDnormY()/GetDmaxY())) * DmaxY;
+		int DmaxX = view.getBounds().width - PfocusX;
+		int DmaxY = view.getBounds().height - PfocusY;
 		
 		Model fisheyeModel = new Model();
 		fisheyeModel.addEdges(new ArrayList(model.getEdges()));
 		fisheyeModel.addVertices(new ArrayList(model.getVertices()));
 		for(Vertex vertex: fisheyeModel.getVertices()){
-			vertex.setWidth(100);
+			
+			int DnormX = (int) vertex.getX();
+			int DnormY = (int) vertex.getY();
+			
+			int PfisheyeX = (int) G(DnormX/DmaxX)*DmaxX + PfocusX;
+			int PfisheyeY = (int) G(DnormY/DmaxY)*DmaxY + PfocusY;		
+			
+			
+			vertex.setX(PfisheyeX);
+			vertex.setY(PfisheyeY);
 		}
 		return fisheyeModel;
 	}
 	
 	public double G(double x) {
-		return (((GetD()+1)*x)/(GetD()*x+1));
+		return (((d+1)*x)/(d*x+1));
 	}
 	
 }

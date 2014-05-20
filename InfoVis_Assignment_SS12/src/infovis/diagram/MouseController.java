@@ -54,7 +54,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
      * Implements MouseListener
      */
 	public void mouseClicked(MouseEvent e) {
-		setMouse(e);
+
 		int x = e.getX();
 		int y = e.getY();
 		double scale = view.getScale();
@@ -91,6 +91,7 @@ public class MouseController implements MouseListener,MouseMotionListener {
 	public void mouseExited(MouseEvent arg0) {
 	}
 	public void mousePressed(MouseEvent e) {
+		setMouse(e);
 		int x = e.getX();
 		int y = e.getY();
 		double scale = view.getScale();
@@ -230,7 +231,5 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		  if (element.contains(x-view.getTranslateX(), y-view.getTranslateY())) currentElement = element;  
 		}
 		return currentElement;
-	}
-	
-    
+	} 
 }
