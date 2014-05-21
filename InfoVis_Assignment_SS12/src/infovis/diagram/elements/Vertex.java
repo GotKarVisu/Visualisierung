@@ -84,7 +84,12 @@ public class Vertex implements Element {
 	}
 
 	public void setWidth(double width) {
-		shape.setFrame(getX(), getY(), width, getHeight());
+		if(width > getWidth()) {
+			shape.setFrame(getX()-width/2, getY(), width, getHeight());
+		}
+		else {
+			shape.setFrame(getX()+width/2, getY(), width, getHeight());
+		}
 	}
 
 	public double getHeight() {
@@ -93,7 +98,12 @@ public class Vertex implements Element {
 	}
 
 	public void setHeight(double height) {
-		shape.setFrame(getX(), getY(), getWidth(), height);
+		if(height > getHeight()) {
+			shape.setFrame(getX(), getY()-height/2, getWidth(), height);
+		}
+		else {
+			shape.setFrame(getX(), getY()+height/2, getWidth(), height);
+		}
 	}
 	public void updatePosition(double x, double y) {
 		shape.setFrame(x, y, getWidth(), getHeight());

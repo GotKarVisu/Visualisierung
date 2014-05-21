@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Fisheye implements Layout{
-	public double d = 2;
+	public double d = 5;
 	
 	
 	
@@ -20,41 +20,60 @@ public class Fisheye implements Layout{
 	}
 	
 	
-	public void setMouseCoords(int x, int y, View view) {
-		
-		
-	}
+	public void setMouseCoords(int x, int y, View view) {}
 
 	public Model transform(Model model, View view) {
 		
+		
 		int PfocusX = view.getMouseX();
 		int PfocusY = view.getMouseY();
-		
-		int DmaxX = view.getBounds().width - PfocusX;
-		int DmaxY = view.getBounds().height - PfocusY;
-		
 		Model fisheyeModel = new Model();
-		fisheyeModel.addEdges(new ArrayList(model.getEdges()));
-		fisheyeModel.addVertices(new ArrayList(model.getVertices()));
-		for(Vertex vertex: fisheyeModel.getVertices()){
-			
-			int DnormX = (int) vertex.getX();
-			int DnormY = (int) vertex.getY();
-			
-			int PfisheyeX = (int) G(DnormX/DmaxX)*DmaxX + PfocusX;
-			int PfisheyeY = (int) G(DnormY/DmaxY)*DmaxY + PfocusY;		
-			
-			
-			vertex.setX(PfisheyeX);
-			vertex.setY(PfisheyeY);
+		for(Edge e : model.getEdges()) {
+			fisheyeModel.addEdge(e);
 		}
+		for(Vertex v : model.getVertices()) {
+			fisheyeModel.addVertex(v);
+		}
+		for(Vertex vertex: fisheyeModel.getVertices()){
+			double PfishX = F1(vertex.getX(),PfocusX, view);
+			double PfishY = F1(vertex.getY(),PfocusY, view);
+
+			
+			
+			double QnormX = 0.0, QnormY = 0.0, QfishX = 0.0, QfishY = 0.0;
+			QnormX = vertex.getX() + vertex.getWidth()/2.0;
+			QnormY = vertex.getY() * vertex.getHeight()/2.0;
+			
+			QfishX = F1(QnormX, PfocusX, view);
+			QfishY = F1(QnormY, PfocusY, view);
+			
+			double size = 2*Math.min(Math.abs(QfishX-PfishX), Math.abs(QfishY-PfishY));
+			vertex.setWidth(size);
+			vertex.setHeight(size/3);
+			
+			vertex.setX(PfishX);
+			vertex.setY(PfishY);
+		}
+		view.setModel(fisheyeModel);
 		return fisheyeModel;
 	}
-	
 	public double G(double x) {
 		return (((d+1)*x)/(d*x+1));
 	}
-	
+	public double Pfey(double Pnorm, double Dmax, double Pfocus) {
+		return G(Pnorm/Dmax)*Dmax+Pfocus;
+	}
+	public double F1(double X, double focus, View view) {
+		double Dmax = 0.0;
+		
+		if(X > focus) {
+			Dmax = view.getBounds().width - focus;
+		}
+		else {
+			Dmax = 0 - focus;
+		}
+		double Dnorm = X - focus;
+		double Pfish = Pfey(Dnorm,Dmax,focus);
+		return Pfish;
+	}
 }
-
-

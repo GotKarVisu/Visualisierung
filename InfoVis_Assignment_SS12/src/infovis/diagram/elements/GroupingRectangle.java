@@ -59,5 +59,25 @@ public class GroupingRectangle implements Element {
 	public double getCenterY(){
 		return rect2D.getCenterY();
 	}
+	@Override
+	public void setWidth(double width) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void setHeight(double height) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public double getHeight() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public double getWidth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

@@ -40,4 +40,28 @@ public class None implements Element {
 		return 0;
 	}
 
+	@Override
+	public void setWidth(double width) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHeight(double height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getHeight() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getWidth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

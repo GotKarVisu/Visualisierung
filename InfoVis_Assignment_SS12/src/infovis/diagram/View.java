@@ -11,12 +11,12 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
-public class View extends JPanel{
+public class View extends JPanel {
 	private Model model = null;
 	private Color color = Color.BLUE;
 	private double scale = 1;
-	 private int MousePosX = 0;
-	 private int MousePosY = 0;
+	private int MousePosX = 0;
+	private int MousePosY = 0;
 	private double translateX = 0.0;
 	private double translateY = 0.0;
 	private double markerOriginX = 0.0;

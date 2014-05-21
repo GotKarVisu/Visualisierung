@@ -19,6 +19,7 @@ import java.util.List;
 
 public class MouseController implements MouseListener,MouseMotionListener {
 	 private Model model;
+	 private Model backupModel;
 	 private View view;
 	 private Element selectedElement = new None();
 	 private double mouseOffsetX;
@@ -101,8 +102,14 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			drawingEdge = new DrawingEdge((Vertex)getElementContainingPosition(x/scale,y/scale));
 			model.addElement(drawingEdge);
 		} else if (fisheyeMode){
-			view.setModel((new Fisheye().transform(model, view)));
+			Model tmpModel = new Model();
+			tmpModel.generateTestValues();
+			view.setModel(tmpModel);
+			Fisheye layout = new Fisheye();
+			model = layout.transform(tmpModel, view);
+			view.setModel(model);
 			view.repaint();
+			model = tmpModel;
 		} else {
 			
 			selectedElement = getElementContainingPosition(x/scale,y/scale);
@@ -184,10 +191,17 @@ public class MouseController implements MouseListener,MouseMotionListener {
 		}
 		
 		if (fisheyeMode){
-			/*
-			 * handle fisheye mode interactions
-			 */
+			Model tmpModel = new Model();
+			tmpModel.generateTestValues();
+			view.setModel(tmpModel);
+			
+			view.setMousePos(x, y);
+			
+			Fisheye layout = new Fisheye();
+			model = layout.transform(tmpModel, view);
+			view.setModel(model);
 			view.repaint();
+			model = tmpModel;
 		} else if (edgeDrawMode){
 			drawingEdge.setX(e.getX()/scale-view.getTranslateX());
 			drawingEdge.setY(e.getY()/scale-view.getTranslateY());
@@ -212,11 +226,20 @@ public class MouseController implements MouseListener,MouseMotionListener {
 			/*
 			 * handle fish eye initial call
 			 */
-			view.repaint();
-		} else {
-			Debug.p("new Normal Layout");
+			Model tmpModel = new Model();
+			tmpModel.generateTestValues();
+			Fisheye layout = new Fisheye();
+			model = layout.transform(tmpModel, view);
 			view.setModel(model);
 			view.repaint();
+			model = tmpModel;
+		} else {
+			Debug.p("new Normal Layout");
+			Model tmpModel = new Model();
+			tmpModel.generateTestValues();
+			view.setModel(tmpModel);
+			view.repaint();
+			model = tmpModel;
 		}
 	}
 	

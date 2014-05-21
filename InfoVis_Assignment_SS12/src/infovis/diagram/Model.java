@@ -14,7 +14,6 @@ public class Model {
 	private List<Element> elements = new ArrayList<Element>();
 	private List<Vertex>  vertices  = new ArrayList<Vertex>();
 	private List<Edge>    edges = new ArrayList<Edge>();
-    
    
 	public void addVertex(Vertex v){
 		vertices.add(v);
