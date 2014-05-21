@@ -9,6 +9,7 @@ import java.awt.Color;
 public class MenuController {
 	private View view = null;
 	private Model model = null;
+	private Model m = null;
 	private MouseController mouseControllerAddedToView = null;
 	
 	private static MenuController menuController = null;
@@ -85,9 +86,12 @@ public class MenuController {
 		mouseControllerAddedToView.setDrawingEdges(false);
 	}
 	public void startFisheyeMode(){
+		m = new Model();
+		m.clone(view.getModel());
 		mouseControllerAddedToView.setFisheyeMode(true);
 	}
 	public void stopFisheyeMode(){
 		mouseControllerAddedToView.setFisheyeMode(false);
+		view.setModel(m);
 	}
 }

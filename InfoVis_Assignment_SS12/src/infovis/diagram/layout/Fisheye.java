@@ -28,24 +28,23 @@ public class Fisheye implements Layout{
 		int PfocusX = view.getMouseX();
 		int PfocusY = view.getMouseY();
 		Model fisheyeModel = new Model();
-		for(Edge e : model.getEdges()) {
-			fisheyeModel.addEdge(e);
-		}
-		for(Vertex v : model.getVertices()) {
-			fisheyeModel.addVertex(v);
-		}
+		fisheyeModel.clone(model);
+//		for(Edge e : model.getEdges()) {
+//			fisheyeModel.addEdge(e);
+//		}
+//		for(Vertex v : model.getVertices()) {
+//			fisheyeModel.addVertex(v);
+//		}
 		for(Vertex vertex: fisheyeModel.getVertices()){
-			double PfishX = F1(vertex.getX(),PfocusX, view);
-			double PfishY = F1(vertex.getY(),PfocusY, view);
-
-			
+			double PfishX = F1(vertex.getX(),PfocusX, view,true);
+			double PfishY = F1(vertex.getY(),PfocusY, view,false);
 			
 			double QnormX = 0.0, QnormY = 0.0, QfishX = 0.0, QfishY = 0.0;
 			QnormX = vertex.getX() + vertex.getWidth()/2.0;
 			QnormY = vertex.getY() * vertex.getHeight()/2.0;
 			
-			QfishX = F1(QnormX, PfocusX, view);
-			QfishY = F1(QnormY, PfocusY, view);
+			QfishX = F1(QnormX, PfocusX, view,true);
+			QfishY = F1(QnormY, PfocusY, view,false);
 			
 			double size = 2*Math.min(Math.abs(QfishX-PfishX), Math.abs(QfishY-PfishY));
 			vertex.setWidth(size);
@@ -63,11 +62,16 @@ public class Fisheye implements Layout{
 	public double Pfey(double Pnorm, double Dmax, double Pfocus) {
 		return G(Pnorm/Dmax)*Dmax+Pfocus;
 	}
-	public double F1(double X, double focus, View view) {
+	public double F1(double X, double focus, View view, boolean w) {
 		double Dmax = 0.0;
 		
 		if(X > focus) {
-			Dmax = view.getBounds().width - focus;
+			if(w) {
+				Dmax = view.getBounds().width - focus;
+			}
+			else {
+				Dmax = view.getBounds().height - focus;
+			}
 		}
 		else {
 			Dmax = 0 - focus;

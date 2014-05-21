@@ -14,7 +14,18 @@ public class Model {
 	private List<Element> elements = new ArrayList<Element>();
 	private List<Vertex>  vertices  = new ArrayList<Vertex>();
 	private List<Edge>    edges = new ArrayList<Edge>();
-   
+	public void clone(Model m) {
+		this.idCounter = m.idCounter;
+		for(Element e : m.getElements()) {
+			this.addElement(e);
+		}
+		for(Vertex v : m.getVertices()) {
+			this.addVertex(v);
+		}
+		for(Edge e : m.getEdges()) {
+			this.addEdge(e);
+		}
+	}
 	public void addVertex(Vertex v){
 		vertices.add(v);
 		elements.add(v);
@@ -100,5 +111,4 @@ public class Model {
 	public List<Element> getElements() {
 		return elements;
 	}
-	
 }
