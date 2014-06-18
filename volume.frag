@@ -144,7 +144,7 @@ get_sample_data(vec3 in_sampling_pos){
 
 }
 
-#define AUFGABE 31  // 31 32 33 4 5
+#define AUFGABE 33  // 31 32 33 4 5
 void main()
 {
     /// One step trough the volume
@@ -193,40 +193,59 @@ void main()
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
+    float summe = 0;
+    int count_samples = 0;
     while (inside_volume && dst.a < 0.95)
     {      
         // get sample
         float s = get_sample_data(sampling_pos);
-
-        // garbage code
-        dst = vec4(1.0, 0.0, 0.0, 1.0);
-        
+        if(s >= 0.0) {
+            summe += s;
+            count_samples++;
+        }
         // increment the ray sampling position
         sampling_pos  += ray_increment;
 
         // update the loop termination condition
         inside_volume  = inside_volume_bounds(sampling_pos);
     }
+    summe /= count_samples;
+    dst = texture(transfer_texture, vec2(summe, summe));
 #endif
     
 #if AUFGABE == 33
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
+    vec3 I = vec3(0.0,0.0,0.0);
+    float op = 1.0;
     while (inside_volume && dst.a < 0.95)
     {
         // get sample
         float s = get_sample_data(sampling_pos);
-
-        // garbage code
-        dst = vec4(0.0, 1.0, 0.0, 1.0);
-
+        // s ist die intensitaet des schaedels an einer stelle des rays
+        vec3 color = (texture(transfer_texture, vec2(s, s))).rgb;
+        float alpha = (texture(transfer_texture, vec2(s, s))).a;
+        
+        
+        vec3 Itemp = vec3(0.0,0.0,0.0);
+        Itemp.r = color.r*alpha;
+        Itemp.g = color.g*alpha;
+        Itemp.b = color.b*alpha;
+        
+        I.r += Itemp.r*op;
+        I.g += Itemp.g*op;
+        I.b += Itemp.b*op;
+        
+        
+        op *= (1-alpha);
         // increment the ray sampling position
         sampling_pos += ray_increment;
 
         // update the loop termination condition
         inside_volume = inside_volume_bounds(sampling_pos);
     }
+    dst = vec4(I,1.0);
 #endif 
 
 #if AUFGABE == 4
@@ -274,3 +293,4 @@ void main()
     // return the calculated color value
     FragColor = dst;
 }
+
