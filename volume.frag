@@ -19,7 +19,12 @@ uniform ivec3   volume_dimensions;
 uniform vec3    light_position;
 uniform vec3    light_color;
 
-
+struct material {
+    vec4 ambient;
+    vec4 diffus;
+    vec4 specular;
+    float shine;
+};
 
 bool
 inside_volume_bounds(const in vec3 sampling_position)
@@ -144,7 +149,49 @@ get_sample_data(vec3 in_sampling_pos){
 
 }
 
-#define AUFGABE 33  // 31 32 33 4 5
+vec3
+get_gradient(vec3 pos) {
+    vec3 grad = vec3(1.0);
+    float dens = 0.005;
+    grad.x = get_sample_data(vec3(pos.x-dens,pos.y,pos.z)) - get_sample_data(vec3(pos.x+dens,pos.y,pos.z));
+    grad.y = get_sample_data(vec3(pos.x,pos.y-dens,pos.z)) - get_sample_data(vec3(pos.x,pos.y+dens,pos.z));
+    grad.z = get_sample_data(vec3(pos.x,pos.y,pos.z-dens)) - get_sample_data(vec3(pos.x,pos.y,pos.z+dens));
+    return grad;
+}
+
+vec4
+phong(vec3 pos, vec3 I) {
+    vec3 ambientCol = vec3(0.0,0.3,0.0);
+    vec3 diffuseCol = vec3(0.0,0.5,0.0);
+    vec3 specularCol = vec3(0.6,0.6,0.6);
+    
+    material mat = material(vec4(0.0,3.0,0.0,1.0),vec4(0.0,5.0,0.0,1.0),vec4(0.0,7.0,0.0,1.0),1.0);
+    
+    vec3 E = normalize(camera_location-pos);
+    vec3 N = normalize(get_gradient(pos));
+    vec3 L = normalize(light_position-pos);
+    
+    vec3 H = normalize(E + L);
+    
+    vec3 ambient = ambientCol;
+    ambient.r *= I.r;
+    ambient.g *= I.g;
+    ambient.b *= I.b;
+    vec3 diffuse = diffuseCol * max(dot(L,N),0);
+    diffuse.r *= I.r;
+    diffuse.g *= I.g;
+    diffuse.b *= I.b;
+    vec3 specular = specularCol * pow(max(dot(H,N),0),mat.shine);
+    specular.r *= I.r;
+    specular.g *= I.g;
+    specular.b *= I.b;
+    
+    vec4 out_Color = vec4(ambient + diffuse + specular, 1.0);
+    
+    return out_Color;
+}
+
+#define AUFGABE 4  // 31 32 33 332 4 5
 void main()
 {
     /// One step trough the volume
@@ -199,7 +246,7 @@ void main()
     {      
         // get sample
         float s = get_sample_data(sampling_pos);
-        if(s >= 0.0) {
+        if(s >= 0.4) {
             summe += s;
             count_samples++;
         }
@@ -219,7 +266,7 @@ void main()
     // another termination condition for early ray termination is added
     vec3 I = vec3(0.0,0.0,0.0);
     float op = 1.0;
-    while (inside_volume && dst.a < 0.95)
+    while (inside_volume && dst.a < 0.95 && op > 0.1)
     {
         // get sample
         float s = get_sample_data(sampling_pos);
@@ -248,24 +295,79 @@ void main()
     dst = vec4(I,1.0);
 #endif 
 
-#if AUFGABE == 4
+#if AUFGABE == 332
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
+    vec3 I = vec3(0.0,0.0,0.0);
+    float op = 1.0;
     while (inside_volume && dst.a < 0.95)
     {
-        // get sample
-        float s = get_sample_data(sampling_pos);
-
-        // garbage code
-        dst = vec4(0.0, 0.0, 1.0, 1.0);
-
         // increment the ray sampling position
         sampling_pos += ray_increment;
 
         // update the loop termination condition
         inside_volume = inside_volume_bounds(sampling_pos);
     }
+    inside_volume = true;
+    sampling_pos -= ray_increment;
+    while (inside_volume && dst.a < 0.95) {
+        // get sample
+        float s = get_sample_data(sampling_pos);
+        // s ist die intensitaet des schaedels an einer stelle des rays
+        vec3 color = (texture(transfer_texture, vec2(s, s))).rgb;
+        float alpha = (texture(transfer_texture, vec2(s, s))).a;
+        
+        
+        vec3 Itemp = vec3(0.0,0.0,0.0);
+        Itemp.r = color.r*alpha;
+        Itemp.g = color.g*alpha;
+        Itemp.b = color.b*alpha;
+        
+        I.r += Itemp.r*op;
+        I.g += Itemp.g*op;
+        I.b += Itemp.b*op;
+        
+        
+        op *= (1-alpha);
+        
+        sampling_pos -= ray_increment;
+        inside_volume = inside_volume_bounds(sampling_pos);
+    }
+    dst = vec4(I,1.0);
+#endif 
+
+#if AUFGABE == 4
+    vec3 I = vec3(0.0,0.0,0.0);
+    float op = 1.0;
+    while (inside_volume && dst.a < 0.95 && op > 0.1)
+    {
+        // get sample
+        float s = get_sample_data(sampling_pos);
+        // s ist die intensitaet des schaedels an einer stelle des rays
+        vec3 color = (texture(transfer_texture, vec2(s, s))).rgb;
+        float alpha = (texture(transfer_texture, vec2(s, s))).a;
+        
+        
+        vec3 Itemp = vec3(0.0,0.0,0.0);
+        Itemp.r = color.r*alpha;
+        Itemp.g = color.g*alpha;
+        Itemp.b = color.b*alpha;
+        
+        I.r += Itemp.r*op;
+        I.g += Itemp.g*op;
+        I.b += Itemp.b*op;
+        
+        
+        op *= (1-alpha);
+        // increment the ray sampling position
+        sampling_pos += ray_increment;
+
+        // update the loop termination condition
+        inside_volume = inside_volume_bounds(sampling_pos);
+    }
+    dst = phong(sampling_pos,I);
+    
 #endif 
 
 #if AUFGABE == 5
