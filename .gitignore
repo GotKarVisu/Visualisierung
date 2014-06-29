@@ -1,3 +1,5 @@
 .metadata/
 *.*~
 /InfoVis_Assignment_SS12/bin
+/exercise-scivis/make_and_run.sh
+/exercise-scivis/build
