@@ -161,11 +161,12 @@ get_gradient(vec3 pos) {
 
 vec4
 phong(vec3 pos, vec3 I) {
-    vec3 ambientCol = vec3(0.0,0.3,0.0);
-    vec3 diffuseCol = vec3(0.0,0.5,0.0);
-    vec3 specularCol = vec3(0.6,0.6,0.6);
+    vec3 ambientCol = vec3(0.3,0.3,0.3);
+    vec3 diffuseCol = vec3(0.5,0.5,0.5);
+    //vec3 specularCol = vec3(0.6,0.6,0.6);
+    vec3 specularCol = vec3(1.0,1.0,1.0);
     
-    material mat = material(vec4(0.0,3.0,0.0,1.0),vec4(0.0,5.0,0.0,1.0),vec4(0.0,7.0,0.0,1.0),1.0);
+    material mat = material(vec4(0.0,3.0,0.0,1.0),vec4(0.0,5.0,0.0,1.0),vec4(0.0,7.0,0.0,1.0),100.0);
     
     vec3 E = normalize(camera_location-pos);
     vec3 N = normalize(get_gradient(pos));
@@ -191,7 +192,30 @@ phong(vec3 pos, vec3 I) {
     return out_Color;
 }
 
-#define AUFGABE 4  // 31 32 33 332 4 5
+vec4
+phong(vec3 pos) {
+    vec3 ambientCol = vec3(0.3,0.3,0.3);
+    vec3 diffuseCol = vec3(0.5,0.5,0.5);
+    //vec3 specularCol = vec3(0.6,0.6,0.6);
+    vec3 specularCol = vec3(1.0,1.0,1.0);
+    
+    material mat = material(vec4(0.0,3.0,0.0,1.0),vec4(0.0,5.0,0.0,1.0),vec4(0.0,7.0,0.0,1.0),100.0);
+    
+    vec3 E = normalize(camera_location-pos);
+    vec3 N = normalize(get_gradient(pos));
+    vec3 L = normalize(light_position-pos);
+    
+    vec3 H = normalize(E + L);
+    
+    vec3 ambient = ambientCol;
+    vec3 diffuse = diffuseCol * max(dot(L,N),0);
+    vec3 specular = specularCol * pow(max(dot(H,N),0),mat.shine);
+    vec4 out_Color = vec4(ambient + diffuse + specular, 1.0);
+    
+    return out_Color;
+}
+
+#define AUFGABE 5  // 31 32 33 332 4 5
 void main()
 {
     /// One step trough the volume
@@ -372,17 +396,29 @@ void main()
 
 #if AUFGABE == 5
 
-    // the traversal loop,
+    // the first hit traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
-    while (inside_volume && dst.a < 0.95)
+    bool ratio = true;
+    if(get_sample_data(sampling_pos) < iso_value) {
+        ratio = false;
+    }
+    
+    float threshold = 0.01;
+    while (inside_volume)
     {
         // get sample
         float s = get_sample_data(sampling_pos);
-
-        // garbage code
-        dst = vec4(1.0, 0.0, 1.0, 1.0);
-
+        // s ist die intensitaet des schaedels an einer stelle des rays
+        
+        if(abs(s - iso_value) <= threshold) {
+            dst = phong(sampling_pos);
+            break;
+        }
+        else if(s < iso_value == ratio) {
+            ratio = !ratio;
+            ray_increment = -ray_increment/2;
+        }
         // increment the ray sampling position
         sampling_pos += ray_increment;
 

@@ -134,18 +134,27 @@ int main(int argc, char* argv[])
   //  - unsigned char or float - data value     (0.0 .. 1.0) or (0..255)
   //  - vec4f         - color and alpha value   (0.0 .. 1.0) per channel
   
-  //transfer_fun.add(0.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));
-  //transfer_fun.add(1.0f, glm::vec4(1.0, 1.0, 1.0, 1.0));
   
+  //transfer fuer aufgabe 31 und 32
   transfer_fun.add(0.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));
+  transfer_fun.add(1.0f, glm::vec4(1.0, 1.0, 1.0, 1.0));
+  
+  // transfer fuer aufgabe 33
+  /*transfer_fun.add(0.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));
   transfer_fun.add(0.2f, glm::vec4(0.0, 0.0, 0.0, 0.0));
   transfer_fun.add(0.25f, glm::vec4(0.5, 0.5, 0.5, 0.1));
   transfer_fun.add(0.3f, glm::vec4(0.0, 0.0, 0.0, 0.0));
   transfer_fun.add(0.35f, glm::vec4(0.0, 0.0, 0.0, 0.0));
   transfer_fun.add(0.55f, glm::vec4(1.0, 1.0, 1.0, 0.2));
   transfer_fun.add(0.75f, glm::vec4(0.0, 0.0, 0.0, 0.0));
-  transfer_fun.add(1.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));
-   
+  transfer_fun.add(1.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));*/
+  
+  // transfer fuer aufgabe 4
+  /*transfer_fun.add(0.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));
+  transfer_fun.add(0.2f, glm::vec4(0.0, 0.0, 0.0, 0.0));
+  transfer_fun.add(0.25f, glm::vec4(0.5, 0.5, 0.5, 1.0));
+  transfer_fun.add(0.3f, glm::vec4(0.0, 0.0, 0.0, 0.0));
+  transfer_fun.add(1.0f, glm::vec4(0.0, 0.0, 0.0, 0.0));*/
 
   ///NOTHING TODO UNTIL HERE-------------------------------------------------------------------------------
   
