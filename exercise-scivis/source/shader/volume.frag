@@ -163,14 +163,17 @@ vec4
 phong(vec3 pos, vec3 I) {
     vec3 ambientCol = vec3(0.3,0.3,0.3);
     vec3 diffuseCol = vec3(0.5,0.5,0.5);
-    //vec3 specularCol = vec3(0.6,0.6,0.6);
     vec3 specularCol = vec3(1.0,1.0,1.0);
     
-    material mat = material(vec4(0.0,3.0,0.0,1.0),vec4(0.0,5.0,0.0,1.0),vec4(0.0,7.0,0.0,1.0),100.0);
+    material mat = material(vec4(0.2,0.2,0.2,0.4),vec4(0.7,0.7,0.7,0.7),vec4(0.3,0.3,0.3,0.3),50.0);
     
     vec3 E = normalize(camera_location-pos);
-    vec3 N = normalize(get_gradient(pos));
-    vec3 L = normalize(light_position-pos);
+    vec3 N = get_gradient(pos);
+    if(N.r == 0 && N.g == 0 && N.b == 0) {
+        return vec4(0.0);
+    }
+    N = normalize(N);
+    vec3 L = normalize(pos-light_position);
     
     vec3 H = normalize(E + L);
     
@@ -192,30 +195,8 @@ phong(vec3 pos, vec3 I) {
     return out_Color;
 }
 
-vec4
-phong(vec3 pos) {
-    vec3 ambientCol = vec3(0.3,0.3,0.3);
-    vec3 diffuseCol = vec3(0.5,0.5,0.5);
-    //vec3 specularCol = vec3(0.6,0.6,0.6);
-    vec3 specularCol = vec3(1.0,1.0,1.0);
-    
-    material mat = material(vec4(0.0,3.0,0.0,1.0),vec4(0.0,5.0,0.0,1.0),vec4(0.0,7.0,0.0,1.0),100.0);
-    
-    vec3 E = normalize(camera_location-pos);
-    vec3 N = normalize(get_gradient(pos));
-    vec3 L = normalize(light_position-pos);
-    
-    vec3 H = normalize(E + L);
-    
-    vec3 ambient = ambientCol;
-    vec3 diffuse = diffuseCol * max(dot(L,N),0);
-    vec3 specular = specularCol * pow(max(dot(H,N),0),mat.shine);
-    vec4 out_Color = vec4(ambient + diffuse + specular, 1.0);
-    
-    return out_Color;
-}
 
-#define AUFGABE 5  // 31 32 33 332 4 5
+#define AUFGABE 31  // 31 32 33 332 4 5
 void main()
 {
     /// One step trough the volume
@@ -224,13 +205,13 @@ void main()
     vec3 sampling_pos       = ray_entry_position + ray_increment; // test, increment just to be sure we are in the volume
 
     /// Init color of fragment
-    vec4 dst = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 dst = vec4(0.0);
 
     /// check if we are inside volume
     bool inside_volume = inside_volume_bounds(sampling_pos);
 
 #if AUFGABE == 31
-    vec4 max_val = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 max_val = vec4(0.0);
   
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
@@ -288,7 +269,7 @@ void main()
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
-    vec3 I = vec3(0.0,0.0,0.0);
+    vec3 I = vec3(0.0);
     float op = 1.0;
     while (inside_volume && dst.a < 0.95 && op > 0.1)
     {
@@ -299,7 +280,7 @@ void main()
         float alpha = (texture(transfer_texture, vec2(s, s))).a;
         
         
-        vec3 Itemp = vec3(0.0,0.0,0.0);
+        vec3 Itemp = vec3(0.0);
         Itemp.r = color.r*alpha;
         Itemp.g = color.g*alpha;
         Itemp.b = color.b*alpha;
@@ -323,7 +304,7 @@ void main()
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
-    vec3 I = vec3(0.0,0.0,0.0);
+    vec3 I = vec3(0.0);
     float op = 1.0;
     while (inside_volume && dst.a < 0.95)
     {
@@ -343,7 +324,7 @@ void main()
         float alpha = (texture(transfer_texture, vec2(s, s))).a;
         
         
-        vec3 Itemp = vec3(0.0,0.0,0.0);
+        vec3 Itemp = vec3(0.0);
         Itemp.r = color.r*alpha;
         Itemp.g = color.g*alpha;
         Itemp.b = color.b*alpha;
@@ -362,7 +343,7 @@ void main()
 #endif 
 
 #if AUFGABE == 4
-    vec3 I = vec3(0.0,0.0,0.0);
+    vec3 I = vec3(0.0);
     float op = 1.0;
     while (inside_volume && dst.a < 0.95 && op > 0.1)
     {
@@ -373,7 +354,7 @@ void main()
         float alpha = (texture(transfer_texture, vec2(s, s))).a;
         
         
-        vec3 Itemp = vec3(0.0,0.0,0.0);
+        vec3 Itemp = vec3(0.0);
         Itemp.r = color.r*alpha;
         Itemp.g = color.g*alpha;
         Itemp.b = color.b*alpha;
@@ -400,6 +381,7 @@ void main()
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
     bool ratio = true;
+    vec3 I = vec3(1.0);
     if(get_sample_data(sampling_pos) < iso_value) {
         ratio = false;
     }
@@ -412,7 +394,7 @@ void main()
         // s ist die intensitaet des schaedels an einer stelle des rays
         
         if(abs(s - iso_value) <= threshold) {
-            dst = phong(sampling_pos);
+            dst = phong(sampling_pos,I);
             break;
         }
         else if(s < iso_value == ratio) {

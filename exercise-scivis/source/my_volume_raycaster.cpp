@@ -47,6 +47,7 @@ Turntable  g_turntable;
 ///SETUP VOLUME RAYCASTER HERE
 // set the volume file
 std::string g_file_string = "../../../data/head_w256_h256_d225_c1_b8.raw";
+//std::string g_file_string = "../../../data/tooth_w256_h256_d161_c1_b16.raw";
 
 // set the sampling distance for the ray traversal
 float       g_sampling_distance             = 0.001f;
