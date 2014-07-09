@@ -51,7 +51,7 @@ std::string g_file_string = "../../../data/head_w256_h256_d225_c1_b8.raw";
 
 // set the sampling distance for the ray traversal
 float       g_sampling_distance             = 0.001f;
-
+int         g_switch_classification         = 1;
 float       g_iso_value                     = 0.2f;
 
 // set the light position and color for shading
@@ -242,6 +242,14 @@ int main(int argc, char* argv[])
         g_sampling_distance += 0.0001f;
         g_sampling_distance = std::min(g_sampling_distance, 0.2f);
     }
+    //pre-classification
+    if (win.isKeyPressed(GLFW_KEY_O)){
+        g_switch_classification = 0;
+    }
+    //post-classification
+    if (win.isKeyPressed(GLFW_KEY_L)) {
+        g_switch_classification = 1;
+    }
 
     // to add key inputs:
     // check win.isKeyPressed(KEY_NAME)
@@ -252,7 +260,9 @@ int main(int argc, char* argv[])
     //        ... do something
     //    
     //}
-
+    
+    
+    
     /// reload shader if key R ist pressed
     if (win.isKeyPressed(GLFW_KEY_R)) {
         if (g_reload_shader_pressed != true) {
@@ -326,6 +336,7 @@ int main(int argc, char* argv[])
     glUniform3fv(glGetUniformLocation(program, "camera_location"), 1,
         glm::value_ptr(camera_location));
     glUniform1f(glGetUniformLocation(program, "sampling_distance"), g_sampling_distance);
+    glUniform1i(glGetUniformLocation(program, "switch_classification"), g_switch_classification);
     glUniform1f(glGetUniformLocation(program, "iso_value"), g_iso_value);
     glUniform3fv(glGetUniformLocation(program, "max_bounds"), 1,
         glm::value_ptr(max_volume_bounds));

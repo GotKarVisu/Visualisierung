@@ -13,6 +13,7 @@ uniform sampler2D transfer_texture;
 uniform vec3    camera_location;
 uniform float   sampling_distance;
 uniform float   iso_value;
+uniform int     switch_classification;
 uniform vec3    max_bounds;
 uniform ivec3   volume_dimensions;
 
@@ -137,6 +138,84 @@ get_triliniear_sample(vec3 in_sampling_pos){
     return texture(volume_texture, sampling_pos_texture_space_f * obj_to_tex).r;
 }
 
+vec4
+get_pre_color(vec3 in_sampling_pos){
+    
+	vec3	boundary_voxel[8];
+    vec3 obj_to_tex                 = vec3(1.0) / max_bounds;
+    vec4 color[8];
+    /// transform from texture space to array space
+    /// ie: (0.3, 0.5, 1.0) -> (76.5 127.5 255.0)
+    vec3 sampling_pos_array_space_f = in_sampling_pos * vec3(volume_dimensions);
+
+	vec3 floor_pos, ceil_pos, texture_pos;
+	floor_pos.x = floor(sampling_pos_array_space_f.x);
+	floor_pos.y = floor(sampling_pos_array_space_f.y);
+	floor_pos.z = floor(sampling_pos_array_space_f.z);
+	ceil_pos.x = ceil(sampling_pos_array_space_f.x);
+	ceil_pos.y = ceil(sampling_pos_array_space_f.y);
+	ceil_pos.z = ceil(sampling_pos_array_space_f.z);
+
+	boundary_voxel[0].x = floor_pos.x;
+	boundary_voxel[0].y = floor_pos.y;
+	boundary_voxel[0].z = floor_pos.z;
+	
+	boundary_voxel[1].x = ceil_pos.x;
+	boundary_voxel[1].y = floor_pos.y;
+	boundary_voxel[1].z = floor_pos.z;
+
+	boundary_voxel[2].x = floor_pos.x;
+	boundary_voxel[2].y = ceil_pos.y;
+	boundary_voxel[2].z = floor_pos.z;
+
+	boundary_voxel[3].x = ceil_pos.x;
+	boundary_voxel[3].y = ceil_pos.y;
+	boundary_voxel[3].z = floor_pos.z;
+
+	boundary_voxel[4].x = floor_pos.x;
+	boundary_voxel[4].y = floor_pos.y;
+	boundary_voxel[4].z = ceil_pos.z;
+
+	boundary_voxel[5].x = ceil_pos.x;
+	boundary_voxel[5].y = floor_pos.y;
+	boundary_voxel[5].z = ceil_pos.z;
+
+	boundary_voxel[6].x = floor_pos.x;
+	boundary_voxel[6].y = ceil_pos.y;
+	boundary_voxel[6].z = ceil_pos.z;
+
+	boundary_voxel[7].x = ceil_pos.x;
+	boundary_voxel[7].y = ceil_pos.y;
+	boundary_voxel[7].z = ceil_pos.z;
+
+    for(int i= 0; i<8; ++i) {
+        texture_pos = boundary_voxel[i] / vec3(volume_dimensions);
+        float s = texture(volume_texture,texture_pos * obj_to_tex).r;
+        color[i] = texture(transfer_texture,vec2(s,s));
+    }
+    
+    sampling_pos_array_space_f.x -= floor(sampling_pos_array_space_f.x);
+    sampling_pos_array_space_f.y -= floor(sampling_pos_array_space_f.y);
+    sampling_pos_array_space_f.z -= floor(sampling_pos_array_space_f.z);
+    
+	// 0 - 1 - 2 - 6 front = z
+	// 3 - 4 - 5 - 7 back  = z+1
+	// front - back
+
+	vec4 ft, fb, bt, bb, front, back;
+	ft = (1 - sampling_pos_array_space_f.x) * color[0] + sampling_pos_array_space_f.x * color[1];
+	fb = (1 - sampling_pos_array_space_f.x) * color[2] + sampling_pos_array_space_f.x * color[6];
+	bt = (1 - sampling_pos_array_space_f.x) * color[3] + sampling_pos_array_space_f.x * color[4];
+	bb = (1 - sampling_pos_array_space_f.x) * color[5] + sampling_pos_array_space_f.x * color[7];
+	
+	front = (1 - sampling_pos_array_space_f.y) * fb + sampling_pos_array_space_f.y * ft;
+	back =  (1 - sampling_pos_array_space_f.y) * bb * sampling_pos_array_space_f.y * bt;
+	
+	vec4 interpol_sampling_pos_f = (1 - sampling_pos_array_space_f.z) * front + sampling_pos_array_space_f.y * back;
+	return interpol_sampling_pos_f;
+	
+}
+
 float
 get_sample_data(vec3 in_sampling_pos){
 #if 0
@@ -196,7 +275,7 @@ phong(vec3 pos, vec3 I) {
 }
 
 
-#define AUFGABE 31  // 31 32 33 332 4 5
+#define AUFGABE 8  // 31 32 33 332 4 5 8
 void main()
 {
     /// One step trough the volume
@@ -241,7 +320,6 @@ void main()
 #endif 
     
 #if AUFGABE == 32
-    
     // the traversal loop,
     // termination when the sampling position is outside volume boundarys
     // another termination condition for early ray termination is added
@@ -298,6 +376,7 @@ void main()
         inside_volume = inside_volume_bounds(sampling_pos);
     }
     dst = vec4(I,1.0);
+
 #endif 
 
 #if AUFGABE == 332
@@ -407,8 +486,44 @@ void main()
         // update the loop termination condition
         inside_volume = inside_volume_bounds(sampling_pos);
     }
-    
-#endif 
+#endif
+
+#if AUFGABE == 8
+    vec4 max_val = vec4(0.0);
+      
+    // the traversal loop,
+    // termination when the sampling position is outside volume boundarys
+    // another termination condition for early ray termination is added
+    while (inside_volume && max_val.a < 0.95) 
+    {      
+        vec4 color = vec4(1.0);
+        if(switch_classification == 1) {
+            
+            // get sample
+            float s = get_sample_data(sampling_pos);
+                    
+            // apply the transfer functions to retrieve color and opacity
+            color = texture(transfer_texture, vec2(s, s));
+        }
+        else if(switch_classification == 0){
+            color = get_pre_color(sampling_pos);
+        }
+        // this is the example for maximum intensity projection
+        max_val.r = max(color.r, max_val.r);
+        max_val.g = max(color.g, max_val.g);
+        max_val.b = max(color.b, max_val.b);
+        max_val.a = max(color.a, max_val.a);
+        
+        // increment the ray sampling position
+        sampling_pos  += ray_increment;
+
+        // update the loop termination condition
+        inside_volume  = inside_volume_bounds(sampling_pos);
+    }
+
+    dst = max_val;
+#endif
+
 
     // return the calculated color value
     FragColor = dst;
